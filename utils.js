@@ -7,12 +7,3 @@ exports.is_function = function(obj){
 exports.is_array = function(obj){
     return toString.call(obj) === "[object Array]";
 };
-
-exports.delayed = function(f, that){
-    return function(){
-        for(var i=0;i<arguments.length;i+=1){
-            arguments[i] = de(arguments[i]);
-        }
-        return f.apply(that || this, arguments);
-    };
-};

@@ -64,6 +64,7 @@ exports.cond = cond = function(){
 };
 
 exports.is_lat = is_lat = function(l){
+    //True if "l" is a list consistent only of atoms
     return cond(
         [is_null(l), true],
         [is_atom(car(l)), 
@@ -73,8 +74,8 @@ exports.is_lat = is_lat = function(l){
         false
     );
 };
-
 exports.or = or = function (){
+    //True if one of the arguments is true 
 	for(var i=0; i<arguments.length;i++){
 		if(de(arguments[i])){
 			return true;
@@ -82,12 +83,8 @@ exports.or = or = function (){
 	}
 	return false;
 };
-
-function pr(a){
-    console.log(a);
-    return a;
-}
-exports.is_member = is_member = function (a, lat){
+exports.is_member = is_member = function is_member(a, lat){
+    //Checks if "a" in part of lat
 	return cond(
         [is_null(lat), false],
         function(){ 
@@ -97,4 +94,84 @@ exports.is_member = is_member = function (a, lat){
                 });
         }
 	);
+};
+exports.rember = function rember(a, lat){
+    //Removes first "a" element from lat
+    return cond(
+        [is_null(lat), quote()],
+        [is_eq(a, car(lat)), cdr(lat)],
+        [function(){
+            return cons(car(lat), rember(a, cdr(lat)));
+        }]
+    );
+};
+exports.firsts = function firsts(lat){
+    return cond(
+        [is_null(lat), quote()],
+        [function(){
+            return cons(
+                car(car(lat)),
+                firsts(cdr(lat))
+            );
+        }]
+    );
+};
+exports.insertR = function insert(_new, old, lat){
+    //Inserts _new element after old in lat.
+    return cond(
+            [is_null(lat), quote()],
+            [cond(
+                [is_eq(old, car(lat)), cons(old, cons(_new, cdr(lat)))],
+                [function(){
+                    return cons(car(lat), insert(_new, old, cdr(lat)));
+                }]
+            )]
+        );
+};
+exports.insertL = function insert(_new, old, lat){
+    //Inserts _new element before old in lat.
+    return cond(
+            [is_null(lat), quote()],
+            [cond(
+                [is_eq(old, car(lat)), cons(_new, lat)],
+                [function(){
+                    return cons(car(lat), insert(_new, old, cdr(lat)));
+                }]
+            )]
+        );
+};
+exports.subst = function replace(_new, old, lat){
+    //Replace old in lat to _new
+    return cond(
+            [is_null(lat), quote()],
+            [cond(
+                [is_eq(old, car(lat)), cons(_new, cdr(lat))],
+                [function(){
+                    return cons(car(lat), replace(_new, old, cdr(lat)));
+                }]
+            )]
+        );
+};
+exports.subst2 = function replace(_new, old1, old2, lat){
+    return cond(
+            [is_null(lat), quote()],
+            [cond(
+                [or(is_eq(old1, car(lat)), 
+                    is_eq(old2, car(lat))), cons(_new, cdr(lat))],
+                [function(){
+                    return cons(car(lat), replace(_new, old1, old2, cdr(lat)));
+                }]
+            )]
+        );
+};
+exports.multirember = function rember(a, lat){
+    return cond(
+        [is_null(lat), quote()],
+        [is_eq(a, car(lat)), function(){
+                return rember(a, cdr(lat));
+            }],
+        [function(){
+            return cons(car(lat), rember(a, cdr(lat)));
+        }]
+    );
 };

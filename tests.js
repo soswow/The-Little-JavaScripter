@@ -14,6 +14,14 @@ var car = s.car,
     is_lat = s.is_lat,
     is_member = s.is_member,
     
+    rember = s.rember,
+    firsts = s.firsts,
+    insertR = s.insertR,
+    insertL = s.insertL,
+    subst = s.subst,
+    subst2 = s.subst2,
+    multirember = s.multirember,
+    
     testp = testUtils.testp,
     fail = testUtils.fail;
     
@@ -76,3 +84,29 @@ testp(or(0, false, ""), false);
 p("--is_member--");
 testp(is_member(1, [2,3,4,1,5]), true);
 testp(is_member(7, [2,3,4,1,5]), false);
+
+p("--rember--");
+testp(rember(3, [1,2,3,4,5]), [1,2,4,5]);
+testp(rember(3, [1,2,3,4,5,3]), [1,2,4,5,3]);
+testp(rember(4, [1,2,3,4,5]), [1,2,3,5]);
+testp(rember(7, [1,2,3,4,5]), [1,2,3,4,5]);
+
+p("--firsts--");
+testp(firsts([[1,6], [2,8,9], [3,4,5]]), [1,2,3]);
+
+p("--insertR--");
+testp(insertR("topping", "fudge", ["ice","cream","with","fudge","for","dessert"]), 
+    ["ice","cream","with","fudge","topping","for","dessert"]);
+
+p("--insertL--");
+testp(insertL("A","b",["w","q","t","b","y"]), ["w","q","t","A","b","y"]);
+
+p("--subst--");
+testp(subst("A","b",["w","q","t","b","y"]), ["w","q","t","A","y"]);
+
+p("--subst2--");
+testp(subst2("A", "b", "q", ["w","q","t","b","y"]), ["w","A","t","b","y"]);
+testp(subst2("A", "b", "q", ["w","i","t","b","y"]), ["w","i","t","A","y"]);
+
+p("--multirember--");
+testp(multirember(1, [1,2,4,1,5,1]), [2,4,5]);
