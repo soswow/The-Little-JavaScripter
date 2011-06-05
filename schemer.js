@@ -9,9 +9,12 @@ exports.cdr = cdr = function(list){
 };
 
 exports.cons = cons = function(atom, list){
+    if(utils.is_function(list)){
+        list = list();
+    }
     tmp = utils.copy_arr(list);
     if (!utils.is_array(list)){
-        throw "cons second arg must be a lists";
+        throw "cons second arg must be a lists, not "+ typeof(list);
     }
     tmp.splice(0,0,atom);
     return tmp;
@@ -19,7 +22,7 @@ exports.cons = cons = function(atom, list){
 
 exports.is_null = is_null = function(list){
     if (!utils.is_array(list)){
-        throw "is_null only for lists";
+        throw "is_null only for lists, not for " + typeof(list) + "("+list+")";
     }
     return list.length === 0;
 };
@@ -174,4 +177,30 @@ exports.multirember = function rember(a, lat){
             return cons(car(lat), rember(a, cdr(lat)));
         }]
     );
+};
+
+exports.multiinsertR = function insert(_new, old, lat){    
+    //Inserts _new element after all old in lat.
+    return cond(
+            [is_null(lat), quote()],
+            [is_eq(old, car(lat)), function(){  
+                return cons(old, cons(_new, insert(_new, old, cdr(lat))));
+            }],
+            [function(){
+                return cons(car(lat), insert(_new, old, cdr(lat)));
+            }]
+        );
+};
+
+exports.multiinsertL = function insert(_new, old, lat){
+    //Inserts _new element after all old in lat.
+    return cond(
+            [is_null(lat), quote()],
+            [is_eq(old, car(lat)), function(){
+                return cons(_new, cons(old, insert(_new, old, cdr(lat))));
+            }],
+            [function(){
+                return cons(car(lat), insert(_new, old, cdr(lat)));
+            }]
+        );
 };

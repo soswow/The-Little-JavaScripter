@@ -21,6 +21,8 @@ var car = s.car,
     subst = s.subst,
     subst2 = s.subst2,
     multirember = s.multirember,
+    multiinsertR = s.multiinsertR,
+    multiinsertL = s.multiinsertL,
     
     testp = testUtils.testp,
     fail = testUtils.fail;
@@ -110,3 +112,9 @@ testp(subst2("A", "b", "q", ["w","i","t","b","y"]), ["w","i","t","A","y"]);
 
 p("--multirember--");
 testp(multirember(1, [1,2,4,1,5,1]), [2,4,5]);
+
+p("--multiinsertR--");
+testp(multiinsertR(2, 1, [0,1,0,1,2]), [0,1,2,0,1,2,2]);
+
+p("--multiinsertL--");
+testp(multiinsertL(2, 1, [0,1,0,1,2]), [0,2,1,0,2,1,2]);
