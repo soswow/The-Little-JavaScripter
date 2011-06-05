@@ -204,3 +204,15 @@ exports.multiinsertL = function insert(_new, old, lat){
             }]
         );
 };
+
+exports.multisubst = function subst(_new, old, lat){
+    return cond(
+            [is_null(lat), quote()],
+            [is_eq(old, car(lat)), function(){
+                return cons(_new, subst(_new, old, cdr(lat)));
+            }],
+            [function(){
+                return cons(car(lat), subst(_new, old, cdr(lat)));
+            }]
+        );
+};
